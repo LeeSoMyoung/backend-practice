@@ -1,0 +1,8 @@
+type Mutation{
+    create(userID:String!, password:String!, email:String!, name:String!, phoneNumber:String!,
+    gender:String!, school:String!, bank:String!, owner:String!, accountNum:String!):Boolean!
+}
+
+type Query{
+    hello:String!
+}

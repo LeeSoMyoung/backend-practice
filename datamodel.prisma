@@ -1,0 +1,96 @@
+type User{
+  id: ID! @id @unique
+  phoneNumber:String! @unique 
+  userID: String! @unique
+  email: String! @unique
+  password:String!
+  profilePic:File
+  name:String!
+  gender:String!
+  state:String! @default(value:"0")
+  school:String!
+  accountInfo: Account! @relation(name:"UserBankAccount", onDelete:CASCADE)
+  major:String
+  studentNum:String
+  currentRoom:Room @relation(name:"CurrentRoom")
+  rooms:[Room] @relation(name:"RecentRooms")
+  ReportHistory:[Report] @relation(name:"Report_History")
+  Blocking:[User] @relation(name:"BlockRelation")
+  Blocked:[User] @relation(name:"BlockRelation")
+}
+
+type File{
+  id:ID! @id
+  url:String!
+}
+
+type Account{
+  id:ID! @id
+  bank:String!
+  accountNum:String!
+  owner:String!
+}
+
+type Message{
+  id:ID! @id
+  from:User!
+  content:String!
+  createDate:DateTime! @createAt 
+}
+
+type ChatRoom{
+  id:ID! @id
+  title:String!
+  Users:[User!]!
+  messages:[Message]!
+}
+
+type Location{
+  id:ID! @id @unique
+  name:String!
+  Latitude:Float!
+  Longitude:Float!
+}
+
+type Room{
+  roomID:ID! @id @unique
+  Users:[User]! @relation(name:"RoomUser")
+  chatting:ChatRoom! @relation(name:"RoomChatting", onDelete:CASCADE)
+  ready:[User] @relation(name:"ReadyUser")
+  from:Location! @relation(name:"FromLocation")
+  to:Location! @relation(name:"Destination")
+  when:DateTime!
+  roomGenderFilter:Boolean!
+  leader:User! @relation(name:"Leader")
+  pay:Payment @relation(link:TABLE, onDelete:CASCADE)
+}
+
+type Payment{
+  id:ID! @id @unique
+  unpaidUser:[User]!
+  price:Int
+  connectedRoom:Room!
+}
+
+type Report{
+  id:ID! @id @unique
+  reportedUser:User! @relation(name:"Reported")
+  from:User! @relation(name:"Reporting")
+  reason: String!
+  where:Room! @relation(name:"ReportRoom")
+  state: String!
+}
+
+type BlockedUser{
+  id:ID! @id
+  block:User!
+  deactivateDate:DateTime! @createAt
+}
+
+type Deactivate{
+  id:ID! @id
+  deactivateUser:User!
+  why:Int!
+  deactivateReason:String
+  deactivatedDate:DateTime! @createAt
+}
